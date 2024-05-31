@@ -1,3 +1,8 @@
 from django.contrib import admin
+from . models import *
 
-# Register your models here.
+admin.site.register(Tema)
+admin.site.register(Konzultant)
+admin.site.register(Odbor)
+admin.site.register(Student)
+admin.site.register(Student)
