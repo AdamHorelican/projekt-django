@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soč - práce</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            text-align: center;
+            max-width: 800px;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .title h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #333;
+        }
+        .title h3 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #666;
+        }
+        .filter-section {
+            margin: 20px 0;
+            text-align: left;
+        }
+        .filter-section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .filter-section input,
+        .filter-section select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .tema-item {
+            list-style: none;
+            padding: 20px;
+            margin: 10px 0;
+            background: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .tema-title {
+            margin: 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+        .tema-description {
+            color: #666;
+        }
+        .tema-consultant,
+        .tema-student,
+        .tema-availability {
+            margin: 5px 0;
+        }
+        .tema-availability {
+            font-weight: bold;
+            color: #007BFF;
+        }
+    </style>
+        
+</head>
+<body>
+    <div class="title">
+        <h1>SOCKA</h1>
+        <h3>SPS-IT</h3>
+    </div>
+
+    <div class="filter-section">
+        <label for="filter-nazov">Filtrovať podľa názvu:</label>
+        <input type="text" id="filter-nazov" oninput="filterItems()">
+
+        <label for="filter-ucitel">Filtrovať podľa učiteľa:</label>
+        <select id="filter-ucitel" onchange="filterItems()">
+            <option value="">Všetci</option>
+            {% for ucitel in ucitelia %}
+            <option value="{{ ucitel.titul }} {{ ucitel.meno }} {{ ucitel.priezvisko }}">{{ ucitel.titul }} {{ ucitel.meno }} {{ ucitel.priezvisko }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="filter-dostupnost">Filtrovať podľa dostupnosti:</label>
+        <select id="filter-dostupnost" onchange="filterItems()">
+            <option value="">Všetko</option>
+            <option value="Voľne">Voľne</option>
+            <option value="Obsadené">Obsadené</option>
+            <option value="Čakajuce">Čakajuce</option>
+        </select>
+    </div>
+
+    <div class="sections">
+        {% if tema %}
+        <div class="container">
+            <ul id="tema-list">
+                {% for temy in tema %}
+                <li class="tema-item">
+                    <h1 class="tema-title">{{temy.nazov}}</h1>
+                    <p class="tema-description">{{temy.popis}}</p>
+                    <p class="tema-consultant"><strong>Konzultant:</strong> {{temy.konzultant.titul}} {{temy.konzultant.meno}} {{temy.konzultant.priezvisko}}</p>
+                    <p class="tema-student"><strong>Študent:</strong> {{temy.student.meno}} {{temy.student.priezvisko}} {{temy.student.trieda}}</p>
+                    <p class="tema-availability">{{temy.dostupnost}}</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function filterItems() {
+            var inputNazov = document.getElementById('filter-nazov').value.toLowerCase();
+            var inputUcitel = document.getElementById('filter-ucitel').value.toLowerCase();
+            var inputDostupnost = document.getElementById('filter-dostupnost').value.toLowerCase();
+            var items = document.querySelectorAll('.tema-item');
+
+            items.forEach(function(item) {
+                var title = item.querySelector('.tema-title').textContent.toLowerCase();
+                var consultant = item.querySelector('.tema-consultant').textContent.toLowerCase();
+                var availability = item.querySelector('.tema-availability').textContent.toLowerCase();
+
+                var matchesNazov = title.includes(inputNazov);
+                var matchesUcitel = consultant.includes(inputUcitel);
+                var matchesDostupnost = inputDostupnost === "" || availability.includes(inputDostupnost);
+
+                if (matchesNazov && matchesUcitel && matchesDostupnost) {
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

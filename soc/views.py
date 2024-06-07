@@ -1,14 +1,10 @@
+from django.shortcuts import render
 from django.shortcuts import render, HttpResponse
 from . models import *
+import datetime
 
-def vypis_konzultantov(request):
-    titul = Trieda.objects.all().order_by("nazov")
+def vypis_skola(request):
+    studenti = Student.objects.all().order_by("priezvisko")
     ucitelia = Ucitel.objects.all().order_by("priezvisko")
-    studenti = Student.objects.all().order_by("priezvisko")
-    kruzky = Kruzok.objects.all().order_by("nazov")
-    return render(request, "skola/index.html", {"triedy":triedy, "ucitelia":ucitelia, "studenti":studenti, "kruzky":kruzky})
-    
-
-def vypis_studentov(request):
-    studenti = Student.objects.all().order_by("priezvisko")
-    return render(request, "skola/index.html", {"studenti":studenti})
+    tema = Tema.objects.all()
+    return render(request, "soc/index.html", {"studenti": studenti, "ucitelia": ucitelia, "tema": tema})
